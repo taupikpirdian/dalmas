@@ -82,57 +82,67 @@
                         <!-- IDENTITAS PASIEN -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
+                                <label class="form-label">Personil <span class="text-danger">*</span></label>
+                                <select class="form-select select2 @error('role') is-invalid @enderror" 
+                                        id="user_id" name="user_id" required>
+                                    <option value="">Pilih Personil</option>
+                                    @foreach($users as $user)
+                                    <option value="{{ $user->id }}" {{ old('user_id', $data?->user_id ?? '') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('user_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Nomor Tugas <span class="text-danger">*</span></label>
-                                <input type="number" name="age" class="form-control" placeholder="Contoh: SKM/03440xxxxx" value="{{ old('nomor',$data->nomor ?? '') }}" required>
+                                <input type="text" name="nomor" class="form-control" placeholder="Contoh: SKM/03440xxxxx" value="{{ old('nomor',$data->nomor ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Tanggal Mulai <span class="text-danger">*</span></label>
-                                <input type="date" name="name" class="form-control" placeholder="Masukan Nama Pasien" value="{{ old('name',$data->name ?? '') }}" required>
+                                <input type="text" name="start_date" class="form-control datepicker" placeholder="Masukan tanggal mulai" value="{{ old('start_date',$data->start_date ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Tanggal Selesai <span class="text-danger">*</span></label>
-                                <input type="date" name="name" class="form-control" placeholder="Masukan Nama Pasien" value="{{ old('name',$data->name ?? '') }}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Nama <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" placeholder="Masukan Nama Pasien" value="{{ old('name',$data->name ?? '') }}" required>
+                                <input type="text" name="end_date" class="form-control datepicker" placeholder="Masukan tanggal selesai" value="{{ old('end_date',$data->end_date ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Pangkat <span class="text-danger">*</span></label>
-                                <input type="text" name="religion" class="form-control" placeholder="Contoh: AKP"  value="{{ old('religion',$data->religion ?? '') }}" required>
+                                <input type="text" name="pangkat" class="form-control" placeholder="Contoh: AKP"  value="{{ old('pangkat',$data->pangkat ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">NRP/NIP <span class="text-danger">*</span></label>
-                                <input type="text" name="religion" class="form-control" placeholder="Contoh: Islam"  value="{{ old('religion',$data->religion ?? '') }}" required>
+                                <input type="text" name="nrp" class="form-control" placeholder="Contoh: 42142141"  value="{{ old('nrp',$data->nrp ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Jabatan <span class="text-danger">*</span></label>
-                                <input type="text" name="religion" class="form-control" placeholder="Contoh: PAUR KESMAPTA"  value="{{ old('religion',$data->religion ?? '') }}" required>
+                                <input type="text" name="jabatan" class="form-control" placeholder="Contoh: PAUR KESMAPTA"  value="{{ old('jabatan',$data->jabatan ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Kesatuan <span class="text-danger">*</span></label>
-                                <input type="text" name="religion" class="form-control" placeholder="Contoh: BIDDOKKES"  value="{{ old('religion',$data->religion ?? '') }}" required>
+                                <input type="text" name="satuan" class="form-control" placeholder="Contoh: BIDDOKKES"  value="{{ old('satuan',$data->satuan ?? '') }}" required>
                             </div>
                         </div>
                         
                         <!-- SARAN -->
                         <div class="mb-3">
                             <label class="form-label">Pertimbangan</label>
-                            <textarea name="recommendation" rows="3" class="form-control">{{ old('recommendation',$data->recommendation ?? '') }}</textarea>
+                            <textarea name="pertimbangan" rows="3" class="form-control">{{ old('pertimbangan',$data->pertimbangan ?? '') }}</textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Dasar</label>
-                            <textarea name="recommendation" rows="3" class="form-control">{{ old('recommendation',$data->recommendation ?? '') }}</textarea>
+                            <textarea name="dasar" rows="3" class="form-control">{{ old('dasar',$data->dasar ?? '') }}</textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Tugas</label>
-                            <textarea name="recommendation" rows="3" class="form-control">{{ old('recommendation',$data->recommendation ?? '') }}</textarea>
+                            <textarea name="tugas" rows="3" class="form-control">{{ old('tugas',$data->tugas ?? '') }}</textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Tembusan</label>
-                            <textarea name="recommendation" rows="3" class="form-control">{{ old('recommendation',$data->recommendation ?? '') }}</textarea>
+                            <textarea name="tembusan" rows="3" class="form-control">{{ old('tembusan',$data->tembusan ?? '') }}</textarea>
                         </div>
-  
 
                         <div class="d-flex justify-content-end gap-2">
                             <a href="{{ route('dashboard.sprint.index') }}" class="btn btn-secondary">
@@ -176,45 +186,6 @@
 <script>
     $(document).ready(function() {
         var is_edit = {!! json_encode($is_edit) !!};
-        // when $is_edit == true, remove required on password and confirmation_password
-        if (is_edit) {
-            $('#password-label').text('Password');
-            $('#password-confirmation-label').text('Konfirmasi Password');
-            $('#password').attr('required', false);
-            $('#password_confirmation').attr('required', false);
-        }
-    });
-    // Toggle password visibility
-    document.getElementById('togglePassword').addEventListener('click', function() {
-        const passwordField = document.getElementById('password');
-        const eyeIcon = document.getElementById('eyeIcon');
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            eyeIcon.classList.remove('fa-eye');
-            eyeIcon.classList.add('fa-eye-slash');
-        } else {
-            passwordField.type = 'password';
-            eyeIcon.classList.remove('fa-eye-slash');
-            eyeIcon.classList.add('fa-eye');
-        }
-    });
-
-    // Form validation
-    document.querySelector('form').addEventListener('submit', function(e) {
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('password_confirmation').value;
-        
-        if (password !== confirmPassword) {
-            e.preventDefault();
-            alert('Password dan konfirmasi password tidak sama!');
-            return false;
-        }
-        
-        if (password.length < 8) {
-            e.preventDefault();
-            alert('Password minimal 8 karakter!');
-            return false;
-        }
     });
 </script>
 @endsection

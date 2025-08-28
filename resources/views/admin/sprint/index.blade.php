@@ -45,18 +45,19 @@
             <tr>
                 <th>No</th>
                 <th>Nomor</th>
+                <th>Tanggal Mulai</th>
+                <th>Tanggal Selesai</th>
                 <th>NRP</th>
                 <th>Nama</th>
                 <th>Jabatan</th>
                 <th>Kesatuan</th>
+                <th>Status</th>
                 <th>Tanggal Dibuat</th>
+                <th>Dibuat Oleh</th>
                 <th>Aksi</th>
             </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td colspan="8" class="text-center">Tidak ada data</td>
-                </tr>
             </tbody>
         </table>
         </div>  
@@ -67,7 +68,75 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
-    //   $('#example').DataTable();
+      $('#example').DataTable();
+    });
+
+    var dataTable = $("#example").DataTable({
+        //   "scrollX": true,
+          processing: true,
+          serverSide: true,
+          autoWidth: true,
+          orderCellsTop: true,
+          fixedHeader: true,
+        //   sDom: 'lrtip',
+          fixedColumns: {
+              right: 1,
+              left: 0,
+          },
+          ajax: "{{ route('dashboard.sprint.datatable') }}",
+          columns: [
+              {
+                  data: 'DT_RowIndex',
+                  orderable: false
+              },
+              {
+                  data: 'nomor',
+                  name: 'nomor'
+              },
+              {
+                  data: 'start_date',
+                  name: 'start_date'
+              },
+              {
+                  data: 'end_date',
+                  name: 'end_date'
+              },
+              {
+                  data: 'nrp',
+                  name: 'nrp'
+              },
+              {
+                  data: 'name',
+                  name: 'name'
+              },
+              {
+                  data: 'jabatan',
+                  name: 'jabatan'
+              },
+              {
+                  data: 'satuan',
+                  name: 'satuan'
+              },
+              {
+                  data: 'status',
+                  name: 'status'
+              },
+              {
+                  data: 'created_at',
+                  name: 'created_at'
+              },
+              {
+                  data: 'created_by',
+                  name: 'created_by'
+              },
+              {
+                  data: 'action',
+                  orderable: false
+              }
+          ],
+          order: [
+              [6, 'desc']
+          ]
     });
 
     function destroy(id) {

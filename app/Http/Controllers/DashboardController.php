@@ -14,7 +14,9 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $countUsers = 0;
+        $countUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'personil');
+        })->count();
         // count perkaras
         $countPerkaras = 0;
         // get report and group by polres_id and count

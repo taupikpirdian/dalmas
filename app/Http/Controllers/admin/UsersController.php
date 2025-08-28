@@ -70,27 +70,6 @@ class UsersController extends Controller
 
             // Assign role
             $user->assignRole($validated['role']);
-
-            // assign access institution
-            if ($request->role == 'polsek') {
-                Access::create([
-                    'user_id' => $user->id,
-                    'institution_id' => $request->polsek_id,
-                ]);
-            } else if ($request->role == 'polres') {
-                Access::create([
-                    'user_id' => $user->id,
-                    'institution_id' => $request->polres_id,
-                ]);
-            } else if ($request->role == 'polda') {
-                // find data polda
-                $polda = Institution::where('level', 0)->first();
-                Access::create([
-                    'user_id' => $user->id,
-                    'institution_id' => $polda->id,
-                ]);
-            }
-
             DB::commit();
             return redirect()->route('dashboard.users.index')
                 ->with('success', 'User berhasil ditambahkan dengan role ' . ucfirst($validated['role']) . '.');
@@ -116,24 +95,11 @@ class UsersController extends Controller
      */
     public function edit(string $id)
     {
-        $polres = Institution::where('level', 1)->get();
         $roles = Role::all();
         $is_edit = true;
         $user = User::findOrFail($id);
-        // get access
-        $access = Access::where('user_id', $id)->first();
-        $polres_id = null;
-        $polsek_id = null;
-        if ($access) {
-            if ($access->institution->level == 1) {
-                $polres_id = $access->institution->id;
-            } else {
-                $polres_id = $access->institution->parent_id;
-                $polsek_id = $access->institution->id;
-            }
-        }
 
-        return view('admin.users.create', compact('roles', 'polres', 'is_edit', 'user', 'access', 'polres_id', 'polsek_id'));
+        return view('admin.users.create', compact('roles', 'is_edit', 'user'));
     }
 
     /**

@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('documentation_sprints', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('sprint_id');
+            $table->string('name');
+            $table->string('path');
+            $table->string('original_name')->nullable();
             $table->timestamps();
         });
     }

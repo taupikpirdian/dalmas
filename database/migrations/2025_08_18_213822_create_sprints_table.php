@@ -13,6 +13,19 @@ return new class extends Migration
     {
         Schema::create('sprints', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('nomor');
+            $table->string('nrp');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->string('pangkat')->nullable();
+            $table->string('jabatan')->nullable();
+            $table->string('satuan')->nullable();
+            $table->text('pertimbangan');
+            $table->text('dasar');
+            $table->text('tugas');
+            $table->text('tembusan');
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
         });
     }
