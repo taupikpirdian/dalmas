@@ -82,23 +82,8 @@
                         <!-- IDENTITAS PASIEN -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Personil <span class="text-danger">*</span></label>
-                                <select class="form-select select2 @error('role') is-invalid @enderror" 
-                                        id="user_id" name="user_id" required>
-                                    <option value="">Pilih Personil</option>
-                                    @foreach($users as $user)
-                                    <option value="{{ $user->id }}" {{ old('user_id', $data?->user_id ?? '') == $user->id ? 'selected' : '' }}>
-                                        {{ $user->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                                @error('user_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Nomor Tugas <span class="text-danger">*</span></label>
-                                <input type="text" name="nomor" class="form-control" placeholder="Contoh: SKM/03440xxxxx" value="{{ old('nomor',$data->nomor ?? '') }}" required>
+                                <input type="text" name="nomor" class="form-control" placeholder="Masukan nomor tugas ..." value="{{ old('nomor',$data->nomor ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Tanggal Mulai <span class="text-danger">*</span></label>
@@ -109,34 +94,39 @@
                                 <input type="text" name="end_date" class="form-control datepicker" placeholder="Masukan tanggal selesai" value="{{ old('end_date',$data->end_date ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
+                                <label class="form-label">Nama Personil <span class="text-danger">*</span></label>
+                                <input type="text" name="nama" class="form-control" placeholder="Masukan nama personil ..."  value="{{ old('nama',$data->nama ?? '') }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Pangkat <span class="text-danger">*</span></label>
-                                <input type="text" name="pangkat" class="form-control" placeholder="Contoh: AKP"  value="{{ old('pangkat',$data->pangkat ?? '') }}" required>
+                                <input type="text" name="pangkat" class="form-control" placeholder="Masukan pangkat personil ..."  value="{{ old('pangkat',$data->pangkat ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">NRP/NIP <span class="text-danger">*</span></label>
-                                <input type="text" name="nrp" class="form-control" placeholder="Contoh: 42142141"  value="{{ old('nrp',$data->nrp ?? '') }}" required>
+                                <input type="text" name="nrp" class="form-control" placeholder="Masukan nrp personil ..."  value="{{ old('nrp',$data->nrp ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Jabatan <span class="text-danger">*</span></label>
-                                <input type="text" name="jabatan" class="form-control" placeholder="Contoh: PAUR KESMAPTA"  value="{{ old('jabatan',$data->jabatan ?? '') }}" required>
+                                <input type="text" name="jabatan" class="form-control" placeholder="Masukan jabatan personil ..."  value="{{ old('jabatan',$data->jabatan ?? '') }}" required>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Kesatuan <span class="text-danger">*</span></label>
-                                <input type="text" name="satuan" class="form-control" placeholder="Contoh: BIDDOKKES"  value="{{ old('satuan',$data->satuan ?? '') }}" required>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="role" class="form-label">Jenis Tugas <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('jenis_tugas') is-invalid @enderror" 
+                                            id="jenis_tugas" name="jenis_tugas" required>
+                                        <option value="">Pilih Jenis Tugas</option>
+                                        <option value="Dalam" {{ old('jenis_tugas', $data?->jenis_tugas ?? '') == "Dalam" ? 'selected' : '' }}>Tugas Dalam</option>
+                                        <option value="Luar" {{ old('jenis_tugas', $data?->jenis_tugas ?? '') == "Luar" ? 'selected' : '' }}>Tugas Luar</option>
+                                    </select>
+                                    @error('jenis_tugas')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
                         
-                        <!-- SARAN -->
                         <div class="mb-3">
-                            <label class="form-label">Pertimbangan</label>
-                            <textarea name="pertimbangan" rows="3" class="form-control">{{ old('pertimbangan',$data->pertimbangan ?? '') }}</textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Dasar</label>
-                            <textarea name="dasar" rows="3" class="form-control">{{ old('dasar',$data->dasar ?? '') }}</textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Tugas</label>
+                            <label class="form-label">Deskripsi Tugas</label>
                             <textarea name="tugas" rows="3" class="form-control">{{ old('tugas',$data->tugas ?? '') }}</textarea>
                         </div>
                         <div class="mb-3">

@@ -7,16 +7,18 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\admin\RolesController;
 use App\Http\Controllers\admin\UsersController;
 use App\Http\Controllers\admin\SprintController;
-use App\Http\Controllers\PublicReportController;
 use App\Http\Controllers\admin\AboutUsController;
-use App\Http\Controllers\admin\PerkarasController;
-use App\Http\Controllers\admin\ContactUsController;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome.index');
 
 // Public routes
-Route::get('/hubungi', [PublicReportController::class, 'index'])->name('public.report.index');
-Route::post('/hubungi', [PublicReportController::class, 'store'])->name('public.report.store');
+Route::get('/sprint-public', [SprintController::class, 'datatablePublic'])->name('public.sprint.index');
+Route::get('/penugasan/upload', [SprintController::class, 'penugasanUpload'])->name('public.sprint.upload');
+Route::post('/penugasan/upload', [SprintController::class, 'aksesUpload'])->name('public.sprint.upload-akses');
+Route::get('/penugasan/upload/page/{id}', [SprintController::class, 'uploadPage'])->name('public.sprint.upload-page');
+Route::post('/penugasan/upload/page/{id}', [SprintController::class, 'uploadPageStore'])->name('public.sprint.upload-page-store');
 
 Auth::routes();
 Route::middleware(['auth'])->group(
@@ -78,3 +80,18 @@ Route::middleware(['auth'])->group(
         });
     }
 );
+
+Route::get('file/{id}/{name}', function ($id, $name) {
+    $path = storage_path('app/public/sprints/' . $id . '/' . $name);
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header("Content-Type", $type);
+    return $response;
+});

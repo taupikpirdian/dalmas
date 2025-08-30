@@ -52,13 +52,13 @@
             </a>
           </li>
           @if (auth()->user()->hasRole('admin'))
-          <li class="nav-header">SUPPORT</li>
+          {{-- <li class="nav-header">SUPPORT</li>
           <li class="nav-item">
             <a href="{{ route('dashboard.about-us.index') }}" class="nav-link">
               <i class="bi bi-info-circle"></i>
               <p>Tentang Kami</p>
             </a>
-          </li>
+          </li> --}}
           @endif
         </ul>
         <!--end::Sidebar Menu-->

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Report;
+use App\Models\Sprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +19,7 @@ class DashboardController extends Controller
             $query->where('name', 'personil');
         })->count();
         // count perkaras
-        $countPerkaras = 0;
+        $countPerkaras = Sprint::count();
         // get report and group by polres_id and count
         $perkaras = [];
 

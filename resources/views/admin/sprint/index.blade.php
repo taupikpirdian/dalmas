@@ -50,7 +50,6 @@
                 <th>NRP</th>
                 <th>Nama</th>
                 <th>Jabatan</th>
-                <th>Kesatuan</th>
                 <th>Status</th>
                 <th>Tanggal Dibuat</th>
                 <th>Dibuat Oleh</th>
@@ -112,10 +111,6 @@
               {
                   data: 'jabatan',
                   name: 'jabatan'
-              },
-              {
-                  data: 'satuan',
-                  name: 'satuan'
               },
               {
                   data: 'status',

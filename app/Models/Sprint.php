@@ -20,7 +20,11 @@ class Sprint extends Model
         'tugas',
         'tembusan',
         'created_by',
-        'status'
+        'status',
+        'nama',
+        'jenis_tugas',
+        'token',
+        'expires_at'
     ];
 
     public function user()
@@ -31,5 +35,10 @@ class Sprint extends Model
     public function personil()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(DocumentationSprint::class, 'sprint_id', 'id');
     }
 }

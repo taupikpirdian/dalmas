@@ -28,7 +28,7 @@ class UsersController extends Controller
     public function create()
     {
         $polres = Institution::where('level', 1)->get();
-        $roles = Role::all();
+        $roles = Role::where('name', 'Admin')->get();
         $is_edit = false;
         $user = null;
         $polres_id = null;
@@ -95,7 +95,7 @@ class UsersController extends Controller
      */
     public function edit(string $id)
     {
-        $roles = Role::all();
+        $roles = Role::where('name', 'Admin')->get();
         $is_edit = true;
         $user = User::findOrFail($id);
 

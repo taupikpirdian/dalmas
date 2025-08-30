@@ -84,7 +84,7 @@
     <div class="col-md-8">
         <div class="login-container">
           <div class="header-banner">
-            <h6 class="fw-semibold mb-0">Silahkan Login untuk Mengakses Sistem</h6>
+            <h6 class="fw-semibold mb-0">Silahkan masukan Nomor Penugasan dan NRP untuk upload file</h6>
           </div>
           
           <div class="logo-container">
@@ -92,41 +92,39 @@
             <img src="{{ asset('assets/images/logo/logopolda.png') }}" alt="Logo Sumsel" />
           </div>
           
-          @if ($errors->any())
+          @if (session('error'))
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <strong>Login Gagal!</strong> Periksa kembali email dan password Anda.
+            <strong>Akses Gagal!</strong> Periksa kembali nomor dan nrp Anda.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
           @endif
       
-          <form method="POST" action="{{ route('login') }}">
+          <form method="POST" action="{{ route('public.sprint.upload-akses') }}">
             @csrf
             <div class="mb-3">
-              <label for="email" class="form-label fw-semibold">Username</label>
+              <label for="nomor" class="form-label fw-semibold">Nomor</label>
               <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
-                <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email"
-                  value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Masukkan user anda">
+                <input id="nomor" type="text" class="form-control @error('email') is-invalid @enderror" name="nomor"
+                  value="{{ old('nomor') }}" required placeholder="Masukkan nomor penugasan anda ...">
               </div>
-              @error('email')
+              @error('nomor')
               <div class="text-danger small mt-1">{{ $message }}</div>
               @enderror
             </div>
             <div class="mb-4">
-              <label for="password" class="form-label fw-semibold">Password</label>
+              <label for="nrp" class="form-label fw-semibold">NRP</label>
               <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"
-                  required autocomplete="current-password" placeholder="Masukkan password anda">
+                <input id="nrp" type="nrp" class="form-control @error('nrp') is-invalid @enderror" name="nrp"
+                  required placeholder="Masukkan nrp anda ...">
               </div>
-              @error('password')
+              @error('nrp')
               <div class="text-danger small mt-1">{{ $message }}</div>
               @enderror
             </div>
             <div class="d-grid">
               <button type="submit" class="btn btn-lg" style="background-color: #4d0f10; color: white;">
-                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                <i class="bi bi-box-arrow-in-right me-2"></i>Submit
               </button>
             </div>
           </form>

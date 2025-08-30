@@ -40,7 +40,11 @@
       background-color: #f8f9fa;
       padding: 1.5rem;
     }
+
   </style>
+  @yield('styles')
+  @include('admin.component.style')
+
 </head>
 <body>
   <header style="height: 160px; background-color: #4d0f10;">
@@ -82,6 +86,7 @@
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}" href="{{ route('dashboard.index') }}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}" href="{{ route('public.sprint.upload') }}">Upload Penugasan</a></li>
         </ul>
       </div>
     </div>
@@ -95,7 +100,7 @@
   </section>
 
   <!-- Footer -->
-  <footer class="bg-light text-center py-3 mt-auto border-top">
+  <footer class="bg-light text-center py-3 border-top fixed-bottom">
     <div class="container">
       <h6 class="fw-bold">Link Terkait</h6>
       <ul class="list-unstyled mb-1">
@@ -104,6 +109,7 @@
     </div>
   </footer>
 
+  @include('admin.component.script')
   <script src="public/vendor/bootstrap-5.3.0/bootstrap.bundle.min.js"></script>
 </body>
 </html>

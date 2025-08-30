@@ -5,9 +5,11 @@ namespace App\Http\Controllers\admin;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Sprint;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\DocumentationSprint;
 use Illuminate\Support\Facades\Auth;
 
 class SprintController extends Controller
@@ -48,8 +50,7 @@ class SprintController extends Controller
 
             $posts = Sprint::select([
                 'sprints.*',
-                'users.name'
-            ])->orderBy('created_at', 'desc')->join('users', 'users.id', '=', 'sprints.user_id');
+            ])->orderBy('created_at', 'desc');
 
             if ($request->search['value']) {
                 $posts = $posts->where('users.name', 'like', '%' . $request->search['value'] . '%')
@@ -89,7 +90,7 @@ class SprintController extends Controller
 
                     $nestedData['nomor'] = $post->nomor;
                     $nestedData['nrp'] = $post->nrp;
-                    $nestedData['name'] = $post->name;
+                    $nestedData['name'] = $post->nama;
                     $nestedData['jabatan'] = $post->jabatan;
                     $nestedData['satuan'] = $post->satuan;
                     $nestedData['start_date'] = $post->start_date;
@@ -98,12 +99,84 @@ class SprintController extends Controller
                     $status = "-";
                     if ($post->status == "process") {
                         $status = '<span class="badge bg-info">Berlangsung</span>';
+                    } else if ($post->status == "selesai") {
+                        $status = '<span class="badge bg-success">Selesai</span>';
                     }
 
                     $nestedData['created_at'] = Carbon::parse($post->created_at)->format('d/m/Y H:i');
                     $nestedData['created_by'] = $post->user->name ?? "-";
                     $nestedData['status'] = $status;
                     $nestedData['action'] = $htmlButton;
+                    $nestedData['DT_RowIndex'] = ($key + 1) + $start;
+
+                    $data[] = $nestedData;
+                }
+            }
+
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalData),
+                "data"            => $data
+            );
+
+            return response()->json($json_data);
+        }
+    }
+
+    public function datatablePublic(Request $request)
+    {
+        if (request()->ajax()) {
+            /**
+             * column shown in the table
+             */
+            // check from model Report
+            $columns = [
+                'nomor',
+                'start_date',
+                'end_date',
+                'nrp',
+                'users.name',
+                'jabatan',
+                'satuan',
+                'created_at',
+                'created_by',
+            ];
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+
+            $posts = Sprint::select([
+                'sprints.*',
+            ])->orderBy('created_at', 'desc');
+
+            if ($request->search['value']) {
+                $posts = $posts->where('users.name', 'like', '%' . $request->search['value'] . '%')
+                    ->orWhere('nomor', 'like', '%' . $request->search['value'] . '%')
+                    ->orWhere('nrp', 'like', '%' . $request->search['value'] . '%');
+            }
+
+            $totalData = $posts->count();
+            $posts = $posts->skip($start)->take($limit)->orderBy($order, $dir)->get();
+            $data = array();
+            if (!empty($posts)) {
+                foreach ($posts as $key => $post) {
+                    $nestedData['nomor'] = $post->nomor;
+                    $nestedData['nrp'] = $post->nrp;
+                    $nestedData['name'] = $post->nama;
+                    $nestedData['jabatan'] = $post->jabatan;
+                    $nestedData['start_date'] = $post->start_date;
+                    $nestedData['end_date'] = $post->end_date;
+
+                    $status = "-";
+                    if ($post->status == "process") {
+                        $status = '<span class="badge bg-info">Berlangsung</span>';
+                    } else if ($post->status == "selesai") {
+                        $status = '<span class="badge bg-success">Selesai</span>';
+                    }
+                    $nestedData['status'] = $status;
                     $nestedData['DT_RowIndex'] = ($key + 1) + $start;
 
                     $data[] = $nestedData;
@@ -141,31 +214,23 @@ class SprintController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => ['required'],
             'nomor' => ['required'],
             'start_date' => ['required'],
             'end_date' => ['required'],
+            'nama' => ['required'],
+            'jenis_tugas' => ['required'],
             'pangkat' => ['required'],
             'nrp' => ['required'],
             'jabatan' => ['required'],
-            'satuan' => ['required'],
-            'pertimbangan' => ['required'],
-            'dasar' => ['required'],
-            'tugas' => ['required'],
-            'tembusan' => ['required'],
         ], [
-            'user_id.required' => 'Personil wajib diisi.',
             'nomor.required' => 'nomor wajib diisi.',
             'start_date.required' => 'tanggal mulai wajib diisi.',
             'end_date.required' => 'tanggal selesai wajib diisi.',
+            'nama.required' => 'nama wajib diisi.',
+            'jenis_tugas.required' => 'jenis tugas wajib diisi.',
             'pangkat.required' => 'pangkat wajib diisi.',
             'nrp.required' => 'nrp wajib diisi.',
             'jabatan.required' => 'jabatan wajib diisi.',
-            'satuan.required' => 'satuan wajib diisi.',
-            'pertimbangan.required' => 'pertimbangan wajib diisi.',
-            'dasar.required' => 'dasar wajib diisi.',
-            'tugas.required' => 'tugas wajib diisi.',
-            'tembusan.required' => 'tembusan wajib diisi.',
         ]);
         try {
             DB::beginTransaction();
@@ -200,12 +265,14 @@ class SprintController extends Controller
                 'nomor' => $request->nomor,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
+                'nama' => $request->nama,
                 'pangkat' => $request->pangkat,
                 'nrp' => $request->nrp,
                 'jabatan' => $request->jabatan,
                 'satuan' => $request->satuan,
                 'pertimbangan' => $request->pertimbangan,
                 'dasar' => $request->dasar,
+                'jenis_tugas' => $request->jenis_tugas,
                 'tugas' => $request->tugas,
                 'tembusan' => $request->tembusan,
                 'created_by' => Auth::user()->id
@@ -216,7 +283,6 @@ class SprintController extends Controller
                 ->with('success', 'Data berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Terjadi kesalahan ' . $e->getMessage());
@@ -228,7 +294,7 @@ class SprintController extends Controller
      */
     public function show(string $id)
     {
-        $data = Sprint::where('id', $id)->first();
+        $data = Sprint::with('files')->where('id', $id)->first();
         return view('admin.sprint.show', compact('data'));
     }
 
@@ -252,31 +318,23 @@ class SprintController extends Controller
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
-            'user_id' => ['required'],
             'nomor' => ['required'],
             'start_date' => ['required'],
             'end_date' => ['required'],
+            'nama' => ['required'],
+            'jenis_tugas' => ['required'],
             'pangkat' => ['required'],
             'nrp' => ['required'],
             'jabatan' => ['required'],
-            'satuan' => ['required'],
-            'pertimbangan' => ['required'],
-            'dasar' => ['required'],
-            'tugas' => ['required'],
-            'tembusan' => ['required'],
         ], [
-            'user_id.required' => 'Personil wajib diisi.',
             'nomor.required' => 'nomor wajib diisi.',
             'start_date.required' => 'tanggal mulai wajib diisi.',
             'end_date.required' => 'tanggal selesai wajib diisi.',
+            'nama.required' => 'nama wajib diisi.',
+            'jenis_tugas.required' => 'jenis tugas wajib diisi.',
             'pangkat.required' => 'pangkat wajib diisi.',
             'nrp.required' => 'nrp wajib diisi.',
             'jabatan.required' => 'jabatan wajib diisi.',
-            'satuan.required' => 'satuan wajib diisi.',
-            'pertimbangan.required' => 'pertimbangan wajib diisi.',
-            'dasar.required' => 'dasar wajib diisi.',
-            'tugas.required' => 'tugas wajib diisi.',
-            'tembusan.required' => 'tembusan wajib diisi.',
         ]);
         try {
             DB::beginTransaction();
@@ -305,6 +363,7 @@ class SprintController extends Controller
             }
 
             $sprint->update([
+                'nama' => $request->nama,
                 'user_id'     => $request->user_id,
                 'nomor'       => $request->nomor,
                 'start_date'   => $startDate,
@@ -317,6 +376,7 @@ class SprintController extends Controller
                 'dasar'       => $request->dasar,
                 'tugas'       => $request->tugas,
                 'tembusan'    => $request->tembusan,
+                'jenis_tugas'    => $request->jenis_tugas,
             ]);
 
             DB::commit();
@@ -342,6 +402,108 @@ class SprintController extends Controller
             DB::commit();
             return redirect()->route('dashboard.sprint.index')
                 ->with('success', 'Data berhasil dihapus.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+        }
+    }
+
+    public function penugasanUpload()
+    {
+        return view('public.upload');
+    }
+
+    public function aksesUpload(Request $request)
+    {
+        $token = (string) Str::uuid();
+        $nrp = $request->nrp;
+        $nomor = $request->nomor;
+
+        $sprint = Sprint::where('nomor', $nomor)->where('nrp', $nrp)->where('status', "process")->first();
+        if (!$sprint) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Periksa kembali nomor dan nrp Anda.');
+        }
+
+        if (empty($sprint->token) || $sprint->expires_at < now()) {
+            $sprint->token = $token;
+            $sprint->expires_at = now()->addMinute(10);
+            $sprint->save();
+        } else {
+            $token = $sprint->token;
+        }
+
+        return redirect()->route('public.sprint.upload-page', $sprint->id)->with('success', 'Berhasil akses');
+    }
+
+    public function uploadPage(Request $request, $id)
+    {
+        $sprint = Sprint::where('id', $id)->first();
+        if (!$sprint) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Periksa kembali nomor dan nrp Anda.');
+        }
+        if (empty($sprint->token) || $sprint->expires_at < now()) {
+            return redirect()->route('public.sprint.upload')->with('error', 'Akses habis');
+        }
+
+        $token = $sprint->token;
+        $nrp = $sprint->nrp;
+        $nomor = $sprint->nomor;
+
+        return view('public.upload-akses', [
+            'token' => $token,
+            'nrp' => $nrp,
+            'nomor' => $nomor,
+            'expires_at' => $sprint->expires_at,
+            'id' => $id
+        ]);
+    }
+
+    public function uploadPageStore(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+            $sprint = Sprint::findOrFail($id);
+
+            // 1. Validasi
+            $request->validate([
+                'files' => 'required|array',
+                'files.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // hanya gambar max 2MB
+                'token' => 'required|string',
+            ]);
+
+            // cek token dan expired
+            if (!$sprint->token || $sprint->token !== $request->token || !$sprint->expires_at || now()->greaterThan($sprint->expires_at)) {
+                return back()->withErrors(['token' => 'Token tidak valid atau sudah expired.']);
+            }
+
+            // 2. Simpan multiple file ke storage
+            foreach ($request->file('files') as $file) {
+                $filename = Str::uuid()->toString() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('sprints/' . $sprint->id, $filename, 'public');
+
+                // 3. Masukkan metadata ke table DocumentationSprint
+                DocumentationSprint::create([
+                    'sprint_id'      => $sprint->id,
+                    'name'           => $filename,
+                    'path'           => $path,
+                    'original_name'  => $file->getClientOriginalName(),
+                ]);
+            }
+
+            // 4. Remove token setelah submit
+            $sprint->token = null;
+            $sprint->expires_at = null;
+            $sprint->status = "selesai";
+            $sprint->save();
+
+            // 5. Redirect ke home
+            DB::commit();
+            return redirect()->route('welcome.index')->with('success', 'Upload berhasil.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()
