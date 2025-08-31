@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Report;
 use App\Models\Sprint;
+use App\Models\Personil;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -15,15 +13,35 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $countUsers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'personil');
-        })->count();
+        $personils = Personil::all();
+        foreach ($personils as $personil) {
+            $personil->status_text = $personil->sprints->where('status', 'process')->isNotEmpty()
+                ? 'process'
+                : 'selesai';
+        }
+        $countUsers = Personil::count();
         // count perkaras
         $countPerkaras = Sprint::count();
         // get report and group by polres_id and count
         $perkaras = [];
+        $countFinishSprint = Sprint::where('status', 'selesai')->count();
 
-        return view('admin.index', compact('countUsers', 'countPerkaras', 'perkaras'));
+        /**
+         * jumlah personel bertugas
+         * on table personil relation model to Sprint and check have data "process"
+         */
+        $personelOnprogress = Personil::whereHas('sprints', function ($q) {
+            $q->where('status', 'process');
+        })->count();
+        /**
+         * jumlah personel tidak bertugas
+         * on table personil relation model to Sprint and check no have data "process"
+         */
+        $countIdlePersonel = Personil::whereDoesntHave('sprints', function ($q) {
+            $q->where('status', 'process');
+        })->count();
+
+        return view('admin.index', compact('countUsers', 'countPerkaras', 'perkaras', 'countFinishSprint', 'personelOnprogress', 'countIdlePersonel', 'personils'));
     }
 
     /**

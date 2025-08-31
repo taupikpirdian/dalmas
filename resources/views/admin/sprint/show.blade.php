@@ -36,7 +36,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Personil <span class="text-danger">*</span></label>
-                            <input type="text" name="nama" class="form-control" value="{{ old('nomor',$data->nama ?? '') }}" readonly>
+                            <input type="text" name="nama" class="form-control" value="{{ old('name',$data->personil->name ?? '') }}" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Nomor Tugas <span class="text-danger">*</span></label>
@@ -52,15 +52,15 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Pangkat <span class="text-danger">*</span></label>
-                            <input type="text" name="pangkat" class="form-control" placeholder="-"  value="{{ old('pangkat',$data->pangkat ?? '') }}" readonly>
+                            <input type="text" name="pangkat" class="form-control" placeholder="-"  value="{{ old('pangkat',$data->personil->pangkat ?? '') }}" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">NRP/NIP <span class="text-danger">*</span></label>
-                            <input type="text" name="nrp" class="form-control" placeholder="-"  value="{{ old('nrp',$data->nrp ?? '') }}" readonly>
+                            <input type="text" name="nrp" class="form-control" placeholder="-"  value="{{ old('nrp',$data->personil->nrp ?? '') }}" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Jabatan <span class="text-danger">*</span></label>
-                            <input type="text" name="jabatan" class="form-control" placeholder="-"  value="{{ old('jabatan',$data->jabatan ?? '') }}" readonly>
+                            <input type="text" name="jabatan" class="form-control" placeholder="-"  value="{{ old('jabatan',$data->personil->jabatan ?? '') }}" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Jenis Tugas <span class="text-danger">*</span></label>

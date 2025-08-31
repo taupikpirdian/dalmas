@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Sprint extends Model
 {
     protected $fillable = [
+        'personil_id',
         'user_id',
         'nomor',
         'nrp',
@@ -34,7 +35,7 @@ class Sprint extends Model
 
     public function personil()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Personil::class, 'personil_id');
     }
 
     public function files()

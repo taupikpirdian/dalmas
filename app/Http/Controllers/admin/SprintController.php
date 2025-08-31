@@ -5,11 +5,12 @@ namespace App\Http\Controllers\admin;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Sprint;
+use App\Models\Personil;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use App\Models\DocumentationSprint;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class SprintController extends Controller
@@ -89,10 +90,10 @@ class SprintController extends Controller
                         </div>';
 
                     $nestedData['nomor'] = $post->nomor;
-                    $nestedData['nrp'] = $post->nrp;
-                    $nestedData['name'] = $post->nama;
-                    $nestedData['jabatan'] = $post->jabatan;
-                    $nestedData['satuan'] = $post->satuan;
+                    $nestedData['nrp'] = $post->personil->nrp ?? "-";
+                    $nestedData['name'] = $post->personil->name ?? "-";
+                    $nestedData['jabatan'] = $post->personil->jabatan ?? "-";
+                    $nestedData['satuan'] = $post->personil->satuan ?? "-";
                     $nestedData['start_date'] = $post->start_date;
                     $nestedData['end_date'] = $post->end_date;
 
@@ -164,9 +165,9 @@ class SprintController extends Controller
             if (!empty($posts)) {
                 foreach ($posts as $key => $post) {
                     $nestedData['nomor'] = $post->nomor;
-                    $nestedData['nrp'] = $post->nrp;
-                    $nestedData['name'] = $post->nama;
-                    $nestedData['jabatan'] = $post->jabatan;
+                    $nestedData['nrp'] = $post->personil->nrp;
+                    $nestedData['name'] = $post->personil->name;
+                    $nestedData['jabatan'] = $post->personil->jabatan;
                     $nestedData['start_date'] = $post->start_date;
                     $nestedData['end_date'] = $post->end_date;
 
@@ -204,8 +205,9 @@ class SprintController extends Controller
         $users = User::whereHas('roles', function ($query) {
             $query->where('name', 'personil');
         })->orderBy('name', 'asc')->get();
+        $personils = Personil::orderBy('name', 'asc')->get();
 
-        return view('admin.sprint.create', compact('is_edit', 'data', 'users'));
+        return view('admin.sprint.create', compact('is_edit', 'data', 'users', 'personils'));
     }
 
     /**
@@ -217,20 +219,14 @@ class SprintController extends Controller
             'nomor' => ['required'],
             'start_date' => ['required'],
             'end_date' => ['required'],
-            'nama' => ['required'],
+            'personil_id' => ['required'],
             'jenis_tugas' => ['required'],
-            'pangkat' => ['required'],
-            'nrp' => ['required'],
-            'jabatan' => ['required'],
         ], [
             'nomor.required' => 'nomor wajib diisi.',
             'start_date.required' => 'tanggal mulai wajib diisi.',
             'end_date.required' => 'tanggal selesai wajib diisi.',
-            'nama.required' => 'nama wajib diisi.',
+            'personil_id.required' => 'personil wajib diisi.',
             'jenis_tugas.required' => 'jenis tugas wajib diisi.',
-            'pangkat.required' => 'pangkat wajib diisi.',
-            'nrp.required' => 'nrp wajib diisi.',
-            'jabatan.required' => 'jabatan wajib diisi.',
         ]);
         try {
             DB::beginTransaction();
@@ -239,7 +235,7 @@ class SprintController extends Controller
             $endDate   = Carbon::parse($request->end_date)->endOfDay();
 
             // Validasi NRP dengan date range yang overlap
-            $exists = Sprint::where('nrp', $request->nrp)
+            $exists = Sprint::where('personil_id', $request->personil_id)
                 ->where(function ($query) use ($startDate, $endDate) {
                     $query->whereBetween('start_date', [$startDate, $endDate])
                         ->orWhereBetween('end_date', [$startDate, $endDate])
@@ -265,11 +261,7 @@ class SprintController extends Controller
                 'nomor' => $request->nomor,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
-                'nama' => $request->nama,
-                'pangkat' => $request->pangkat,
-                'nrp' => $request->nrp,
-                'jabatan' => $request->jabatan,
-                'satuan' => $request->satuan,
+                'personil_id' => $request->personil_id,
                 'pertimbangan' => $request->pertimbangan,
                 'dasar' => $request->dasar,
                 'jenis_tugas' => $request->jenis_tugas,
@@ -308,8 +300,9 @@ class SprintController extends Controller
         $users = User::whereHas('roles', function ($query) {
             $query->where('name', 'personil');
         })->orderBy('name', 'asc')->get();
+        $personils = Personil::orderBy('name', 'asc')->get();
 
-        return view('admin.sprint.create', compact('is_edit', 'data', 'users'));
+        return view('admin.sprint.create', compact('is_edit', 'data', 'users', 'personils'));
     }
 
     /**
@@ -321,20 +314,14 @@ class SprintController extends Controller
             'nomor' => ['required'],
             'start_date' => ['required'],
             'end_date' => ['required'],
-            'nama' => ['required'],
+            'personil_id' => ['required'],
             'jenis_tugas' => ['required'],
-            'pangkat' => ['required'],
-            'nrp' => ['required'],
-            'jabatan' => ['required'],
         ], [
             'nomor.required' => 'nomor wajib diisi.',
             'start_date.required' => 'tanggal mulai wajib diisi.',
             'end_date.required' => 'tanggal selesai wajib diisi.',
-            'nama.required' => 'nama wajib diisi.',
+            'personil_id.required' => 'personel wajib diisi.',
             'jenis_tugas.required' => 'jenis tugas wajib diisi.',
-            'pangkat.required' => 'pangkat wajib diisi.',
-            'nrp.required' => 'nrp wajib diisi.',
-            'jabatan.required' => 'jabatan wajib diisi.',
         ]);
         try {
             DB::beginTransaction();
@@ -344,7 +331,7 @@ class SprintController extends Controller
             $endDate   = Carbon::parse($request->end_date)->endOfDay();
 
             // Validasi NRP dengan date range yang overlap, kecuali id ini
-            $exists = Sprint::where('nrp', $request->nrp)
+            $exists = Sprint::where('personil_id', $request->personil_id)
                 ->where('id', '!=', $id)
                 ->where(function ($query) use ($startDate, $endDate) {
                     $query->whereBetween('start_date', [$startDate, $endDate])
@@ -368,10 +355,7 @@ class SprintController extends Controller
                 'nomor'       => $request->nomor,
                 'start_date'   => $startDate,
                 'end_date'     => $endDate,
-                'pangkat'     => $request->pangkat,
-                'nrp'         => $request->nrp,
-                'jabatan'     => $request->jabatan,
-                'satuan'      => $request->satuan,
+                'personil_id' => $request->personil_id,
                 'pertimbangan' => $request->pertimbangan,
                 'dasar'       => $request->dasar,
                 'tugas'       => $request->tugas,
@@ -420,7 +404,12 @@ class SprintController extends Controller
         $nrp = $request->nrp;
         $nomor = $request->nomor;
 
-        $sprint = Sprint::where('nomor', $nomor)->where('nrp', $nrp)->where('status', "process")->first();
+        $sprint = Sprint::where('nomor', $nomor)
+            ->where('status', "process")
+            ->whereHas('personil', function ($q) use ($nrp) {
+                $q->where('nrp', $nrp);
+            })
+            ->first();
         if (!$sprint) {
             return redirect()->back()
                 ->withInput()
@@ -456,7 +445,7 @@ class SprintController extends Controller
 
         return view('public.upload-akses', [
             'token' => $token,
-            'nrp' => $nrp,
+            'nrp' => $sprint->personil->nrp,
             'nomor' => $nomor,
             'expires_at' => $sprint->expires_at,
             'id' => $id

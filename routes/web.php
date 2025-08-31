@@ -1,15 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\PersonilController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\admin\RolesController;
 use App\Http\Controllers\admin\UsersController;
 use App\Http\Controllers\admin\SprintController;
 use App\Http\Controllers\admin\AboutUsController;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Response;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome.index');
 
@@ -54,6 +55,19 @@ Route::middleware(['auth'])->group(
         Route::name('dashboard.')->prefix('dashboard')->group(function () {
             Route::name('sprint.')->prefix('sprint')->group(function () {
                 Route::controller(SprintController::class)->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/store', 'store')->name('store');
+                    Route::get('/datatable', 'datatable')->name('datatable');
+                    Route::get('/{id}/edit', 'edit')->name('edit');
+                    Route::put('/{id}', 'update')->name('update');
+                    Route::delete('/{id}', 'destroy')->name('destroy');
+                    Route::get('/{id}', 'show')->name('show');
+                });
+            });
+
+            Route::name('personil.')->prefix('personil')->group(function () {
+                Route::controller(PersonilController::class)->group(function () {
                     Route::get('/', 'index')->name('index');
                     Route::get('/create', 'create')->name('create');
                     Route::post('/store', 'store')->name('store');

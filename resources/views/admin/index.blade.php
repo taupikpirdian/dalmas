@@ -20,6 +20,90 @@
 <div class="container-fluid">
     <!--begin::Row-->
     <div class="row">
+      <div class="col-lg-4 col-4">
+        <!--begin::Small Box Widget 1-->
+        <div class="small-box text-bg-info">
+          <div class="inner">
+            <h3>{{ $personelOnprogress }}</h3>
+            <p>Jumlah Personel Bertugas</p>
+          </div>
+          <svg
+            class="small-box-icon"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              clip-rule="evenodd"
+              fill-rule="evenodd"
+              d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"
+            ></path>
+            <path
+              clip-rule="evenodd"
+              fill-rule="evenodd"
+              d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"
+            ></path>
+          </svg>
+        </div>
+        <!--end::Small Box Widget 1-->
+      </div>
+      <div class="col-lg-4 col-4">
+        <!--begin::Small Box Widget 1-->
+        <div class="small-box text-bg-warning">
+          <div class="inner">
+            <h3>{{ $countIdlePersonel }}</h3>
+            <p>Jumlah Personel Tidak Bertugas</p>
+          </div>
+          <svg
+            class="small-box-icon"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              clip-rule="evenodd"
+              fill-rule="evenodd"
+              d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"
+            ></path>
+            <path
+              clip-rule="evenodd"
+              fill-rule="evenodd"
+              d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"
+            ></path>
+          </svg>
+        </div>
+        <!--end::Small Box Widget 1-->
+      </div>
+      <div class="col-lg-4 col-4">
+        <!--begin::Small Box Widget 1-->
+        <div class="small-box text-bg-success">
+          <div class="inner">
+            <h3>{{ $countUsers }}</h3>
+            <p>Jumlah Personel Aktif</p>
+          </div>
+          <svg
+            class="small-box-icon"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              clip-rule="evenodd"
+              fill-rule="evenodd"
+              d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"
+            ></path>
+            <path
+              clip-rule="evenodd"
+              fill-rule="evenodd"
+              d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"
+            ></path>
+          </svg>
+        </div>
+        <!--end::Small Box Widget 1-->
+      </div>
       <!--begin::Col-->
       <div class="col-lg-6 col-6">
         <!--begin::Small Box Widget 1-->
@@ -46,12 +130,6 @@
               d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"
             ></path>
           </svg>
-          <a
-            href="#"
-            class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
-          >
-            More info <i class="bi bi-link-45deg"></i>
-          </a>
         </div>
         <!--end::Small Box Widget 1-->
       </div>
@@ -60,8 +138,8 @@
         <!--begin::Small Box Widget 2-->
         <div class="small-box text-bg-success">
           <div class="inner">
-            <h3>{{ $countUsers }}</h3>
-            <p>Jumlah Personel Aktif</p>
+            <h3>{{ $countFinishSprint }}</h3>
+            <p>Jumlah Data Sprint Selesai</p>
           </div>
           <svg
             class="small-box-icon"
@@ -74,17 +152,45 @@
               d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"
             ></path>
           </svg>
-          <a
-            href="#"
-            class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
-          >
-            More info <i class="bi bi-link-45deg"></i>
-          </a>
         </div>
         <!--end::Small Box Widget 2-->
       </div>
     </div>
     <!--end::Row-->
+
+    <div class="row">
+        <h2 class="card-title m-0 mb-3">Data Personil</h2>
+        <table id="example" class="table table-bordered table-striped">
+          <thead>
+          <tr>
+              <th>No</th>
+              <th>NRP</th>
+              <th>Nama</th>
+              <th>Pangkat</th>
+              <th>Jabatan</th>
+              <th>Satuan</th>
+              <th>Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          @foreach ($personils as $key=>$item)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $item->nrp }}</td>
+                <td>{{ $item->name }}</td>
+                <td>{{ $item->pangkat }}</td>
+                <td>{{ $item->jabatan }}</td>
+                <td>{{ $item->satuan }}</td>
+                <td>
+                  {!! $item->status_text == "process" 
+                      ? '<span class="badge bg-info">Sedang bertugas</span>' 
+                      : '<span class="badge bg-success">Idle</span>' !!}
+                </td>
+            </tr>
+          @endforeach
+          </tbody>
+        </table>
+    </div>
 </div>
 @endsection
 @section('scripts')
@@ -96,6 +202,9 @@
 ></script>
 <!-- ChartJS -->
 <script>
+    $(document).ready(function () {
+      $('#example').DataTable();
+    });
     // NOTICE!! DO NOT USE ANY OF THIS JAVASCRIPT
     // IT'S ALL JUST JUNK FOR DEMO
     // ++++++++++++++++++++++++++++++++++++++++++

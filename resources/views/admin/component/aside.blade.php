@@ -44,6 +44,15 @@
             </a>
           </li>
           @endif
+          @if (auth()->user()->hasRole('admin'))
+          <li class="nav-header">MASTER</li>
+          <li class="nav-item">
+            <a href="{{ route('dashboard.personil.index') }}" class="nav-link">
+              <i class="nav-icon bi bi-database"></i>
+              <p>Personil</p>
+            </a>
+          </li>
+          @endif
           <li class="nav-header">DATA PENUGASAN</li>
           <li class="nav-item">
             <a href="{{ route('dashboard.sprint.index') }}" class="nav-link">
@@ -51,15 +60,6 @@
               <p>List Penugasan</p>
             </a>
           </li>
-          @if (auth()->user()->hasRole('admin'))
-          {{-- <li class="nav-header">SUPPORT</li>
-          <li class="nav-item">
-            <a href="{{ route('dashboard.about-us.index') }}" class="nav-link">
-              <i class="bi bi-info-circle"></i>
-              <p>Tentang Kami</p>
-            </a>
-          </li> --}}
-          @endif
         </ul>
         <!--end::Sidebar Menu-->
       </nav>

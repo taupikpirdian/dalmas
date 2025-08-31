@@ -94,20 +94,17 @@
                                 <input type="text" name="end_date" class="form-control datepicker" placeholder="Masukan tanggal selesai" value="{{ old('end_date',$data->end_date ?? '') }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Nama Personil <span class="text-danger">*</span></label>
-                                <input type="text" name="nama" class="form-control" placeholder="Masukan nama personil ..."  value="{{ old('nama',$data->nama ?? '') }}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Pangkat <span class="text-danger">*</span></label>
-                                <input type="text" name="pangkat" class="form-control" placeholder="Masukan pangkat personil ..."  value="{{ old('pangkat',$data->pangkat ?? '') }}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">NRP/NIP <span class="text-danger">*</span></label>
-                                <input type="text" name="nrp" class="form-control" placeholder="Masukan nrp personil ..."  value="{{ old('nrp',$data->nrp ?? '') }}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Jabatan <span class="text-danger">*</span></label>
-                                <input type="text" name="jabatan" class="form-control" placeholder="Masukan jabatan personil ..."  value="{{ old('jabatan',$data->jabatan ?? '') }}" required>
+                                <label class="form-label">Personil <span class="text-danger">*</span></label>
+                                <select class="form-select @error('personil_id') is-invalid @enderror select2" 
+                                        id="personil_id" name="personil_id" required>
+                                    <option value="">Pilih Personil</option>
+                                    @foreach($personils as $p)
+                                    <option value="{{ $p->id }}" {{ old('personil_id', $data?->personil_id ?? '') == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('personil_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
